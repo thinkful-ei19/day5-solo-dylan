@@ -14,8 +14,6 @@ const STORE = {
 function handleToggleCompleted() {
     $('#toggle-completed').change(function(event) {
         $(event.currentTarget).is(':checked') ? STORE.hideCompleted = true : STORE.hideCompleted = false;
-        // STORE.hideCompleted = $(event.currentTarget).is(':checked');
-
         renderShoppingList();
     });
     
@@ -25,10 +23,8 @@ function handleSearchList() {
     $('#js-search-form').submit(function(event) {
         event.preventDefault();
         const searchedItem = $('.js-search').val();
-        $('.js-search').val('');
+        // $('.js-search').val('');
         STORE.searchTerm = searchedItem;
-        // addItemToShoppingList(newItemName);
-        // console.log(STORE);
         renderShoppingList();
     });
 }
@@ -55,8 +51,11 @@ function handleEditItem() {
 }
 
 function generateItemElement(item, itemIndex, template) {
+
+    const hidden = (item.checked && STORE.hideCompleted) || (item.name.indexOf(STORE.searchTerm) < 0 && STORE.searchTerm) ? 'hidden' : '';
+
     return `
-    <li class="js-item-index-element" data-item-index="${itemIndex}">
+    <li class="js-item-index-element ${hidden}" data-item-index="${itemIndex}">
       <span class="shopping-item js-shopping-item ${item.checked ? 'shopping-item__checked' : ''}">${item.name}</span>
       <form class="js-shopping-edit-item hidden">
         <label>Edit item: </label>
@@ -85,46 +84,9 @@ function generateShoppingItemsString(shoppingList) {
 
 
 function renderShoppingList() {
-
     let filteredItems = [ ...STORE.items ];
-
-    if (STORE.hideCompleted) {
-        filteredItems = filteredItems.filter(item => {
-            return !item.checked;
-        });
-    }
-
-    if (STORE.searchTerm) {
-        filteredItems = filteredItems.filter(item => {
-            return item.name.includes(STORE.searchTerm);
-        });
-    }
-
     const shoppingListItemsString = generateShoppingItemsString(filteredItems);
     $('.js-shopping-list').html(shoppingListItemsString);
-
-    // if (STORE.hideCompleted) {
-    //     filteredItems.forEach(item => {
-    //         if (item.checked) {
-    //             const element = $(`span:contains(${item.name})`).parent();
-    //             $(element).css( { 'display': 'none' } );
-    //         }
-    //     });
-    // }
-
-    // if (STORE.searchTerm) {
-    //     // filteredItems = filteredItems.filter(item => {
-    //     //     return item.name.includes(STORE.searchTerm);
-    //     // });
-
-    //     filteredItems.forEach(item => {
-    //         if (!item.name.includes(STORE.searchTerm)) {
-    //             const element = $(`span:contains(${item.name})`).parent();
-    //             $(element).css( { 'display': 'none' } );
-    //         }
-    //     });
-    // }
-
 }
 
 
