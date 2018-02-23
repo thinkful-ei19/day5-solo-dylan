@@ -7,13 +7,13 @@ const STORE = {
         {name: 'milk', checked: true},
         {name: 'bread', checked: false}
     ],
-    hideCompleted: false
+    hideCompleted: false,
+    searchTerm: null
 };
 
 function handleToggleCompleted() {
     $('#toggle-completed').change(function(event) {
         $(event.currentTarget).is(':checked') ? STORE.hideCompleted = true : STORE.hideCompleted = false;
-
         // STORE.hideCompleted = $(event.currentTarget).is(':checked');
 
         renderShoppingList();
@@ -21,17 +21,57 @@ function handleToggleCompleted() {
     
 }
 
+function handleSearchList() {
+    $('#js-search-form').submit(function(event) {
+        event.preventDefault();
+        const searchedItem = $('.js-search').val();
+        $('.js-search').val('');
+        STORE.searchTerm = searchedItem;
+        // addItemToShoppingList(newItemName);
+        // console.log(STORE);
+        renderShoppingList();
+    });
+}
+
+function handleToggleEditButton() {
+    $('.js-shopping-list').on('click', '.js-item-edit', function(event) {
+        $(event.currentTarget).parent().parent().find('.js-shopping-edit-item').toggleClass('hidden');
+    });
+}
+
+function updateItemName(newName, itemIndex) {
+    STORE.items[itemIndex].name = newName;
+}
+
+function handleEditItem() {
+    $('.js-shopping-list').on('submit', '.js-shopping-edit-item', function(event) {
+        event.preventDefault();
+        const newItemName = $(event.currentTarget).find('.js-edit-name').val();
+        $('.js-edit-name').val('');
+        const currentIndex = $(event.currentTarget).parent().attr('data-item-index');
+        updateItemName(newItemName, currentIndex);
+        renderShoppingList();
+    });
+}
 
 function generateItemElement(item, itemIndex, template) {
     return `
     <li class="js-item-index-element" data-item-index="${itemIndex}">
       <span class="shopping-item js-shopping-item ${item.checked ? 'shopping-item__checked' : ''}">${item.name}</span>
+      <form class="js-shopping-edit-item hidden">
+        <label>Edit item: </label>
+        <input class="js-edit-name" name="edit" type="text">
+        <button type="submit">Submit</button>
+      </form>
       <div class="shopping-item-controls">
         <button class="shopping-item-toggle js-item-toggle">
             <span class="button-label">check</span>
         </button>
         <button class="shopping-item-delete js-item-delete">
             <span class="button-label">delete</span>
+        </button>
+        <button class="shopping-item-edit js-item-edit">
+            <span class="button-label">edit</span>
         </button>
       </div>
     </li>`;
@@ -48,17 +88,42 @@ function renderShoppingList() {
 
     let filteredItems = [ ...STORE.items ];
 
+    if (STORE.hideCompleted) {
+        filteredItems = filteredItems.filter(item => {
+            return !item.checked;
+        });
+    }
+
+    if (STORE.searchTerm) {
+        filteredItems = filteredItems.filter(item => {
+            return item.name.includes(STORE.searchTerm);
+        });
+    }
+
     const shoppingListItemsString = generateShoppingItemsString(filteredItems);
     $('.js-shopping-list').html(shoppingListItemsString);
 
-    if (STORE.hideCompleted) {
-        filteredItems.forEach(item => {
-            if (item.checked) {
-                const element = $(`span:contains(${item.name})`).parent();
-                $(element).css( { 'display': 'none' } );
-            }
-        });
-    }
+    // if (STORE.hideCompleted) {
+    //     filteredItems.forEach(item => {
+    //         if (item.checked) {
+    //             const element = $(`span:contains(${item.name})`).parent();
+    //             $(element).css( { 'display': 'none' } );
+    //         }
+    //     });
+    // }
+
+    // if (STORE.searchTerm) {
+    //     // filteredItems = filteredItems.filter(item => {
+    //     //     return item.name.includes(STORE.searchTerm);
+    //     // });
+
+    //     filteredItems.forEach(item => {
+    //         if (!item.name.includes(STORE.searchTerm)) {
+    //             const element = $(`span:contains(${item.name})`).parent();
+    //             $(element).css( { 'display': 'none' } );
+    //         }
+    //     });
+    // }
 
 }
 
@@ -115,6 +180,9 @@ function handleShoppingList() {
     handleItemCheckClicked();
     handleDeleteItemClicked();
     handleToggleCompleted();
+    handleSearchList();
+    handleEditItem();
+    handleToggleEditButton();
 }
 
 $(handleShoppingList);
