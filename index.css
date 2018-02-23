@@ -6,12 +6,27 @@
     font-family: 'Roboto', sans-serif;
   }
   
-  button, input[type="text"] {
+  input[type="text"] {
     padding: 5px;
+  }
+
+  form {
+    margin: 10px 0;
+  }
+
+  button {
+    background: none;
+    padding: 5px 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 2px solid #A60504;
+    color: #A60504;
   }
   
   button:hover {
     cursor: pointer;
+    background-color: #A60504;
+    color: white;
   }
   
   .hidden {
@@ -34,8 +49,9 @@
   
   .shopping-list > li {
     margin-bottom: 20px;
-    border: 1px solid grey;
+    border: 3px solid black;
     padding: 20px;
+    border-radius: 5px;
   }
   
   .shopping-item {
@@ -44,6 +60,7 @@
     font-style: italic;
     font-size: 20px;
     margin-bottom: 15px;
+    text-transform: uppercase;
   }
   
   .shopping-item__checked {
