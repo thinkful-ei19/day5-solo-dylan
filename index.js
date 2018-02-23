@@ -10,6 +10,17 @@ const STORE = {
     hideCompleted: false
 };
 
+function handleToggleCompleted() {
+    $('#toggle-completed').change(function(event) {
+        $(event.currentTarget).is(':checked') ? STORE.hideCompleted = true : STORE.hideCompleted = false;
+
+        // STORE.hideCompleted = $(event.currentTarget).is(':checked');
+
+        renderShoppingList();
+    });
+    
+}
+
 
 function generateItemElement(item, itemIndex, template) {
     return `
@@ -37,9 +48,18 @@ function renderShoppingList() {
 
     let filteredItems = [ ...STORE.items ];
 
-    // const shoppingListItemsString = generateShoppingItemsString(STORE.items);
     const shoppingListItemsString = generateShoppingItemsString(filteredItems);
     $('.js-shopping-list').html(shoppingListItemsString);
+
+    if (STORE.hideCompleted) {
+        filteredItems.forEach(item => {
+            if (item.checked) {
+                const element = $(`span:contains(${item.name})`).parent();
+                $(element).css( { 'display': 'none' } );
+            }
+        });
+    }
+
 }
 
 
@@ -94,6 +114,7 @@ function handleShoppingList() {
     handleNewItemSubmit();
     handleItemCheckClicked();
     handleDeleteItemClicked();
+    handleToggleCompleted();
 }
 
 $(handleShoppingList);
