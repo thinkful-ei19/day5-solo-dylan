@@ -1,11 +1,14 @@
 'use strict';
 
-const STORE = [
-    {name: 'apples', checked: false},
-    {name: 'oranges', checked: false},
-    {name: 'milk', checked: true},
-    {name: 'bread', checked: false}
-];
+const STORE = {
+    items: [
+        {name: 'apples', checked: false},
+        {name: 'oranges', checked: false},
+        {name: 'milk', checked: true},
+        {name: 'bread', checked: false}
+    ],
+    hideCompleted: false
+};
 
 
 function generateItemElement(item, itemIndex, template) {
@@ -31,13 +34,17 @@ function generateShoppingItemsString(shoppingList) {
 
 
 function renderShoppingList() {
-    const shoppingListItemsString = generateShoppingItemsString(STORE);
+
+    let filteredItems = [ ...STORE.items ];
+
+    // const shoppingListItemsString = generateShoppingItemsString(STORE.items);
+    const shoppingListItemsString = generateShoppingItemsString(filteredItems);
     $('.js-shopping-list').html(shoppingListItemsString);
 }
 
 
 function addItemToShoppingList(itemName) {
-    STORE.push({name: itemName, checked: false});
+    STORE.items.push({name: itemName, checked: false});
 }
 
 function handleNewItemSubmit() {
@@ -51,7 +58,7 @@ function handleNewItemSubmit() {
 }
 
 function toggleCheckedForListItem(itemIndex) {
-    STORE[itemIndex].checked = !STORE[itemIndex].checked;
+    STORE.items[itemIndex].checked = !STORE.items[itemIndex].checked;
 }
 
 
@@ -71,7 +78,7 @@ function handleItemCheckClicked() {
 }
 
 function deleteListItem(itemIndex) {
-    STORE.splice(itemIndex,1);
+    STORE.items.splice(itemIndex,1);
 }
 
 function handleDeleteItemClicked() {
