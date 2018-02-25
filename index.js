@@ -31,7 +31,7 @@ function handleSearchList() {
 
 function handleToggleEditButton() {
     $('.js-shopping-list').on('click', '.js-item-edit', function(event) {
-        $(event.currentTarget).parent().parent().find('.js-shopping-edit-item').toggleClass('hidden');
+        $(event.currentTarget).parents('li').find('form').toggleClass('hidden');
     });
 }
 
@@ -99,8 +99,10 @@ function handleNewItemSubmit() {
         event.preventDefault();
         const newItemName = $('.js-shopping-list-entry').val();
         $('.js-shopping-list-entry').val('');
-        addItemToShoppingList(newItemName);
-        renderShoppingList();
+        if (newItemName) {
+            addItemToShoppingList(newItemName);
+            renderShoppingList();
+        }
     });
 }
 
