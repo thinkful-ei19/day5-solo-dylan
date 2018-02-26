@@ -1,5 +1,3 @@
-'use strict';
-
 const STORE = {
     items: [
         {name: 'apples', checked: false},
